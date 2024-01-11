@@ -1,0 +1,161 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: downloads-postprocess
+  labels:
+    type: downloads-postprocess
+spec:
+  capacity:
+    storage: 65Ti
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.0.0.11
+    path: "/volume1/media/postprocess"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: downloads-postprocess
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 65Ti
+  selector:
+    matchLabels:
+      type: downloads-postprocess
+  storageClassName: ""
+  volumeName: downloads-postprocess
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: downloads-plex-dev
+  labels:
+    type: downloads-plex-dev
+spec:
+  capacity:
+    storage: 65Ti
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: 10.0.0.11
+    path: "/volume1/plex-dev"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: downloads-plex-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 65Ti
+  selector:
+    matchLabels:
+      type: downloads-plex-dev
+  storageClassName: ""
+  volumeName: downloads-plex-dev
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: downloads-downloads
+  labels:
+    type: downloads-downloads
+spec:
+  capacity:
+    storage: 65Ti
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.0.0.11
+    path: "/volume1/temp/downloads"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: downloads-downloads
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 65Ti
+  selector:
+    matchLabels:
+      type: downloads-downloads
+  storageClassName: ""
+  volumeName: downloads-downloads
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: downloads-tv
+  labels:
+    type: downloads-tv
+spec:
+  capacity:
+    storage: 65Ti
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.0.0.11
+    path: "/volume1/media/tv"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: downloads-tv
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 65Ti
+  selector:
+    matchLabels:
+      type: downloads-tv
+  storageClassName: ""
+  volumeName: downloads-tv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: downloads-movies
+  labels:
+    type: downloads-movies
+spec:
+  capacity:
+    storage: 65Ti
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.0.0.11
+    path: "/volume1/media/movies"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: downloads-movies
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 65Ti
+  selector:
+    matchLabels:
+      type: downloads-movies
+  storageClassName: ""
+  volumeName: downloads-movies
+---

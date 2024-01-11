@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: nzbget
+  namespace: downloads
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: lscr.io/linuxserver/nzbget
+              tag: latest
+            env:
+              TZ: America/Denver
+              PUID: 1027
+              PGID: 65536
+    service:
+      main:
+        ports:
+          http:
+            port: 6789
+    ingress:
+      main:
+        enabled: true
+        className: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+        hosts:
+          - host: &host "{{ .Release.Name }}.spenceops.com"
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: nzbget
+        globalMounts:
+          - path: /config
+      downloads:
+        enabled: true
+        existingClaim: downloads-downloads
+        globalMounts:
+          - path: /downloads
+      postprocess:
+        enabled: true
+        existingClaim: downloads-postprocess
+        globalMounts:
+          - path: /postprocess
+      plex-dev-temp:        
+        enabled: true
+        existingClaim: downloads-plex-dev
+        globalMounts:
+          - path: /plex-dev-temp

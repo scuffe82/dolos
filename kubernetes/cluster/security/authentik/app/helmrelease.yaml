@@ -1,0 +1,60 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: security
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: authentik
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+        namespace: flux-system
+      interval: 5m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+
+image:
+  repository: ghcr.io/goauthentik/server
+  tag: 2023.10.5
+  # -- optional container image digest
+  digest: ""
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+ingress:
+  enabled: true
+  ingressClassName: "traefik"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+  hosts:
+    - host: &host auth.spenceops.com
+      paths:
+        - path: "/"
+          pathType: Prefix
+  tls:
+    - hosts:
+      - *host
+
+authentik:
+  secret_key: ${AUTHENTIK_SECRET_KEY}
+  postgresql:
+    password: ${AUTHENTIK_PGSQL_PASS}
+  
+postgresql:
+  enabled: true
+  postgresqlPassword: ${AUTHENTIK_PGSQL_PASS}
+  persistence:
+    enabled: true
+    storageClass: nfs-retain
+
+redis:
+  enabled: true

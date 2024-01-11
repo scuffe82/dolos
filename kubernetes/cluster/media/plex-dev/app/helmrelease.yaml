@@ -1,0 +1,67 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: plex-dev
+  namespace: media
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  interval: 30m
+  values:
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+
+    image:
+      repository: ghcr.io/onedr0p/plex
+      tag: 1.32.6.7557-1cf77d501@sha256:6f87b0811df009af1defc9afad6afa383b9d821a7fcaddc968df41ba445d321e
+
+    service:
+      main:
+        type: LoadBalancer
+        externalTrafficPolicy: Cluster
+        loadBalancerIP: 10.0.1.201
+        ports:
+          http:
+            port: 32400
+
+    env:
+      PLEX_CLAIM: claim-71V4Hhm65aC25VBNCsqE
+      CHANGE_CONFIG_DIR_OWNERSHIP: 'false'
+      TZ: 'America/Denver'
+      ADVERTISE_IP: 'http://10.0.1.201:32400'
+
+    persistence:
+      plex-dev:
+        enabled: true
+        mountPath: /plex-dev
+        type: pvc
+        existingClaim: media-plex-dev
+      config:
+        enabled: true
+        mountPath: /config
+        type: pvc
+        existingClaim: media-plex-dev-config
+      transcode:
+        enabled: true
+        type: emptyDir
+
+    podSecurityContext:
+      runAsUser: 1027
+      runAsGroup: 65536
+      fsGroup: 1027
+      fsGroupChangePolicy: "OnRootMismatch"
+      supplementalGroups:
+        - 44
+        - 109
+
+    nodeSelector:
+      plex: "true"
