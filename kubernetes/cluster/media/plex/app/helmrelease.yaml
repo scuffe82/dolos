@@ -72,7 +72,7 @@ spec:
                  - key: plex
                    operator: In
                    values:
-                   - true
+                   - "true"
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
           securityContext:
