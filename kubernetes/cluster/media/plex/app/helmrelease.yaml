@@ -73,8 +73,6 @@ spec:
                    operator: In
                    values:
                    - "true"
-          nodeSelector:
-            intel.feature.node.kubernetes.io/gpu: "true"
           securityContext:
             runAsUser: 1027
             runAsGroup: 1027
