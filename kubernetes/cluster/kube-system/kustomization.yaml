@@ -5,6 +5,6 @@ resources:
   - metrics-server/deployment.yaml
   - reloader/deployment.yaml
   - intel-device-operator/deployment.yaml
- # - intel-gpu-plugin/deployment.yaml
+  - intel-gpu-plugin/deployment.yaml
   - reflector/deployment.yaml
   - node-feature-discovery/deployment.yaml
