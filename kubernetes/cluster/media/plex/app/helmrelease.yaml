@@ -69,7 +69,7 @@ spec:
                 - weight: 1
                   preference:
                     matchExpressions:
-                    - key: preferred-plex
+                    - key: plex
                       operator: In
                       values:
                       - true
