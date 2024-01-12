@@ -62,17 +62,16 @@ spec:
               limits:
                 gpu.intel.com/i915: 1
                 memory: 12Gi
-        pod:
+          pod:
           affinity:
-            nodeAffinity:
-              preferredDuringSchedulingIgnoredDuringExecution:
-                - weight: 1
-                  preference:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
                     matchExpressions:
-                    - key: plex
-                      operator: In
-                      values:
-                      - true
+                      - key: plex
+                        operator: In
+                        values: ["true"]
+                  topologyKey: kubernetes.io/hostname
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
           securityContext:
