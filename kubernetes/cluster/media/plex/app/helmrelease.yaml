@@ -77,13 +77,13 @@ spec:
                    - "true"
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
-#          securityContext:
-#            runAsUser: 1027
-#            runAsGroup: 1027
+          securityContext:
+            runAsUser: 1027
+            runAsGroup: 1027
 #            runAsNonRoot: true
 #            fsGroup: 1027
 #            fsGroupChangePolicy: OnRootMismatch
-#            supplementalGroups: [44, 105, 65536]
+            supplementalGroups: [44, 105, 65536]
     service:
       main:
         type: LoadBalancer
