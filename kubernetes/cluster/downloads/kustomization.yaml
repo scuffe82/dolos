@@ -5,7 +5,7 @@ resources:
   - storagevolumes/deployment.yaml
   - sabnzbd/deployment.yaml
   - radarr/deployment.yaml
- # - sonarr/deployment.yaml
+  - sonarr/deployment.yaml
   - overseerr/deployment.yaml
   - prowlarr/deployment.yaml
   - nzbget/deployment.yaml
