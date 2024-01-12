@@ -31,10 +31,8 @@ spec:
         containers:
           main:
             image:
-#              repository: ghcr.io/onedr0p/plex
-              repository: plexinc/pms-docker
-              #tag: rolling
-              tag: latest
+              repository: ghcr.io/onedr0p/plex
+              tag: rolling
             env:
               TZ: America/Denver
 #            probes:
