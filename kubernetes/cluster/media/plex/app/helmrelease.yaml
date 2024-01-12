@@ -31,8 +31,10 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/plex
-              tag: rolling
+#              repository: ghcr.io/onedr0p/plex
+              repository: plexinc/pms-docker
+              #tag: rolling
+              tag: latest
             env:
               TZ: America/Denver
             probes:
@@ -75,13 +77,13 @@ spec:
                    - "true"
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
-          securityContext:
+#          securityContext:
 #            runAsUser: 1027
 #            runAsGroup: 1027
 #            runAsNonRoot: true
 #            fsGroup: 1027
 #            fsGroupChangePolicy: OnRootMismatch
-            supplementalGroups: [44, 105, 65536]
+#            supplementalGroups: [44, 105, 65536]
     service:
       main:
         type: LoadBalancer
