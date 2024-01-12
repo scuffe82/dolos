@@ -64,14 +64,15 @@ spec:
                 memory: 12Gi
         pod:
           affinity:
-            podAntiAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchExpressions:
-                    - key: plex
-                      operator: In
-                      values:
-                      - true
+           nodeAffinity:
+             preferredDuringSchedulingIgnoredDuringExecution:
+             - weight: 1
+               preference:
+                 matchExpressions:
+                 - key: plex
+                   operator: In
+                   values:
+                   - true
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
           securityContext:
