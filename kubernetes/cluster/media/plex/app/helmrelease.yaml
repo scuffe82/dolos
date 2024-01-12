@@ -68,10 +68,10 @@ spec:
               requiredDuringSchedulingIgnoredDuringExecution:
                 - labelSelector:
                     matchExpressions:
-                      - key: plex
-                        operator: In
-                        values: ["true"]
-                  topologyKey: kubernetes.io/hostname
+                    - key: plex
+                      operator: In
+                      values:
+                      - true
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
           securityContext:
