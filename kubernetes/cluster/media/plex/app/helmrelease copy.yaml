@@ -29,28 +29,28 @@ spec:
         containers:
           main:
             image:
-              repository: plexinc/pms-docker
-              tag: latest
+              repository: ghcr.io/onedr0p/plex
+              tag: rolling
             env:
               TZ: America/Denver
-#            probes:
-#              liveness: &probes
-#                enabled: true
-#                custom: true
-#                spec:
-#                  httpGet:
-#                    path: /identity
-#                    port: 32400
-#                  initialDelaySeconds: 0
-#                  periodSeconds: 10
-#                  timeoutSeconds: 1
-#                  failureThreshold: 3
-#              readiness: *probes
-#              startup:
-#                enabled: false
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /identity
+                    port: 32400
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
             securityContext:
-              allowPrivilegeEscalation: true
-              readOnlyRootFilesystem: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
@@ -70,9 +70,9 @@ spec:
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
           securityContext:
-            runAsUser: 1027
-            runAsGroup: 586
-            runAsNonRoot: false
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
             supplementalGroups: [44, 105, 10000, 65536, 1027]
