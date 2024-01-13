@@ -23,6 +23,13 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+#  dependsOn:
+#    - name: intel-device-plugin-gpu
+#      namespace: tools
+#    - name: rook-ceph-cluster
+#      namespace: rook-ceph
+#    - name: volsync
+#      namespace: storage
   values:
     controllers:
       main:
@@ -35,65 +42,84 @@ spec:
               tag: rolling
             env:
               TZ: America/Denver
-#            probes:
-#              liveness: &probes
-#                enabled: true
-#                custom: true
-#                spec:
-#                  httpGet:
-#                    path: /identity
-#                    port: 32400
-#                  initialDelaySeconds: 0
-#                  periodSeconds: 10
-#                  timeoutSeconds: 1
-#                  failureThreshold: 3
-#              readiness: *probes
-#              startup:
-#                enabled: false
-#            securityContext:
-#              allowPrivilegeEscalation: false
-#              readOnlyRootFilesystem: true
-#              capabilities: { drop: ["ALL"] }
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /identity
+                    port: 32400
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                gpu.intel.com/i915: 1
-                cpu: 200m
-                memory: 2Gi
+                cpu: 100m
               limits:
                 gpu.intel.com/i915: 1
-                memory: 12Gi
+                memory: 16Gi
         pod:
           affinity:
-           nodeAffinity:
-             preferredDuringSchedulingIgnoredDuringExecution:
-             - weight: 1
-               preference:
-                 matchExpressions:
-                 - key: plex
-                   operator: In
-                   values:
-                   - "true"
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: ["hermes"]
+                  topologyKey: kubernetes.io/hostname
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
           securityContext:
-            runAsUser: 1027
-            runAsGroup: 1027
-#            runAsNonRoot: true
-#            fsGroup: 1027
-#            fsGroupChangePolicy: OnRootMismatch
-            supplementalGroups: [44, 105, 65536]
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups: [44, 105, 10000, 65536, 1027]
     service:
       main:
         type: LoadBalancer
-        annotations:
-          io.cilium/lb-ipam-ips: 10.0.1.200
+#        annotations:
+#          io.cilium/lb-ipam-ips: 192.168.42.210
         ports:
           http:
             port: 32400
+#    ingress:
+#      main:
+#        enabled: true
+#        className: external
+#        annotations:
+#          external-dns.alpha.kubernetes.io/target: external.devbu.io
+#          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+#        hosts:
+#          - host: &host "{{ .Release.Name }}.devbu.io"
+#            paths:
+#              - path: /
+#               service:
+#                  name: main
+#                  port: http
+#        tls:
+#          - hosts:
+#              - *host
     persistence:
       config:
         enabled: true
         existingClaim: plex
+#      # Separate PVC for cache to avoid backing up cache files
+#      plex-cache:
+#        existingClaim: plex-cache
+#        globalMounts:
+#          - path: /config/Library/Application Support/Plex Media Server/Cache
       tmp:
         type: emptyDir
       transcode:
@@ -101,8 +127,10 @@ spec:
       tv:
         enabled: true
         mountPath: /tv
+        type: pvc
         existingClaim: media-tv
       movies:
         enabled: true
         mountPath: /movies
+        type: pvc
         existingClaim: media-movies
