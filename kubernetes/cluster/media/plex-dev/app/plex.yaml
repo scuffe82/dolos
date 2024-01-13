@@ -16,7 +16,7 @@ spec:
       - name: plex-data
         persistentVolumeClaim:
           claimName: plex-dev-config
-      - name: plex-dev
+      - name: media-plex-dev
         persistentVolumeClaim:
           claimName: media-plex-dev
       - name: transcode
