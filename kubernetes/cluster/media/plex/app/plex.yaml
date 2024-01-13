@@ -42,7 +42,7 @@ spec:
           mountPath: /tv
         env:
         - name: CHANGE_CONFIG_DIR_OWNERSHIP
-          value: 'false'
+          value: 'true'
         - name: PLEX_UID
           value: '1027'
         - name: PLEX_GID
