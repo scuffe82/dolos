@@ -17,6 +17,7 @@ resources:
   - ./metrics-server.yaml
   - ./nfs-subdir.yaml
   - ./node-feature-discovery.yaml
+  - ./plex.yaml
   - ./stakater.yaml
   - ./synology-csi.yaml
   - ./traefik.yaml
