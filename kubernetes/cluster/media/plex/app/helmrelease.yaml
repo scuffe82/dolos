@@ -126,11 +126,11 @@ spec:
         type: emptyDir
       tv:
         enabled: true
-        mountPath: /tv
-        type: pvc
+        globalMounts:
+        - Path: /tv
         existingClaim: media-tv
       movies:
         enabled: true
-        mountPath: /movies
-        type: pvc
+        globalMounts:
+        - Path: /movies
         existingClaim: media-movies
