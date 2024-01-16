@@ -1,60 +1,59 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: authentik
   namespace: security
 spec:
-  interval: 5m
+  interval: 30m
   chart:
     spec:
-      chart: authentik
+      chart: app-template
+      version: 2.4.0
       sourceRef:
         kind: HelmRepository
-        name: authentik
+        name: bjw-s
         namespace: flux-system
-      interval: 5m
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
+    cleanupOnFail: true
     remediation:
       retries: 3
+  uninstall:
+    keepHistory: false
   values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/goauthentik/server
+              tag: latest
+            env:
+              TZ: America/Denver
+              PUID: 1027
+              PGID: 65536
+            authentik:
+              secret_key: ${AUTHENTIK_SECRET_KEY}
+              postgresql:
+                password: ${AUTHENTIK_PGSQL_PASS}
 
-image:
-  repository: ghcr.io/goauthentik/server
-  tag: 2023.10.5
-  # -- optional container image digest
-  digest: ""
-  pullPolicy: IfNotPresent
-  pullSecrets: []
-
-ingress:
-  enabled: true
-  ingressClassName: "traefik"
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
-  hosts:
-    - host: &host auth.spenceops.com
-      paths:
-        - path: "/"
-          pathType: Prefix
-  tls:
-    - hosts:
-      - *host
-
-authentik:
-  secret_key: ${AUTHENTIK_SECRET_KEY}
-  postgresql:
-    password: ${AUTHENTIK_PGSQL_PASS}
-  
-postgresql:
-  enabled: true
-  postgresqlPassword: ${AUTHENTIK_PGSQL_PASS}
-  persistence:
-    enabled: true
-    storageClass: nfs-retain
-
-redis:
-  enabled: true
+            postgresql:
+              enabled: true
+              postgresqlPassword: ${AUTHENTIK_PGSQL_PASS}
+              persistence:
+                enabled: true
+                existingClaim: authentik-pgsql
+            redis:
+              enabled: true
+    service:
+      main:
+        type: LoadBalancer
+          loadBalancerIP: 10.0.1.200
+      
