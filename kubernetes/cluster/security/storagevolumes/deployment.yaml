@@ -2,12 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: downloads-storagevolumes
+  name: security-storagevolumes
   namespace: flux-system
 spec:
   dependsOn:
     - name: dolos-cluster
-  path: ./kubernetes/cluster/downloads/storagevolumes/config
+  path: ./kubernetes/cluster/security/storagevolumes/config
   prune: true
   sourceRef:
     kind: GitRepository
