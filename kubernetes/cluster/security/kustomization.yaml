@@ -4,4 +4,4 @@ resources:
   - ./namespace.yaml
   - cert-manager/deployment.yaml
  # - authentik/deployment.yaml
-  - storagevolumes/deployment.yaml
+ # - storagevolumes/deployment.yaml
